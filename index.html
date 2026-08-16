@@ -1,0 +1,2757 @@
+
+Final.html
+
+Page
+1
+/
+1
+100%
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SCIENCE RUN NEO LAB</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+}
+
+body{
+    overflow:hidden;
+    background:#02030b;
+    font-family:Arial,sans-serif;
+}
+
+#game{
+    width:100vw;
+    height:100vh;
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 50% 20%,#182b68,#080b24 55%,#02030b);
+}
+
+/* ================= BACKGROUND ================= */
+
+.grid{
+    position:absolute;
+    width:200%;
+    height:55%;
+    bottom:120px;
+    left:-50%;
+    opacity:.3;
+
+    background:
+        linear-gradient(#21e6ff 1px,transparent 1px),
+        linear-gradient(90deg,#21e6ff 1px,transparent 1px);
+
+    background-size:80px 80px;
+
+    transform:perspective(350px) rotateX(55deg);
+
+    animation:gridMove .5s linear infinite;
+}
+
+@keyframes gridMove{
+    from{background-position:0 0}
+    to{background-position:0 80px}
+}
+
+.star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:#fff;
+    border-radius:50%;
+    box-shadow:0 0 8px #fff;
+}
+
+/* ================= GROUND ================= */
+
+#ground{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:130px;
+
+    background:
+        linear-gradient(#0affb5 0 5px,transparent 5px),
+        linear-gradient(90deg,rgba(0,255,255,.2) 2px,transparent 2px),
+        #060a19;
+
+    background-size:auto,50px 50px,auto;
+
+    border-top:5px solid #00fff2;
+
+    box-shadow:
+        0 -5px 35px #00fff2;
+}
+
+/* ================= HUD ================= */
+
+#hud{
+    position:absolute;
+    z-index:100;
+    top:15px;
+    left:15px;
+    right:15px;
+
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.box{
+    background:rgba(5,8,30,.82);
+    border:2px solid #25efff;
+    border-radius:15px;
+
+    padding:9px 15px;
+
+    color:white;
+
+    box-shadow:
+        0 0 15px rgba(0,240,255,.35);
+
+    backdrop-filter:blur(8px);
+}
+
+.score{
+    color:#ffe14b;
+    font-size:21px;
+    font-weight:bold;
+}
+
+.speed{
+    color:#ff58ef;
+    font-weight:bold;
+}
+
+.combo{
+    color:#5dff9c;
+    font-weight:bold;
+}
+
+/* ================= PLAYER ================= */
+
+#player{
+    position:absolute;
+    left:15%;
+    bottom:130px;
+
+    width:75px;
+    height:85px;
+
+    z-index:50;
+}
+
+.body{
+    position:absolute;
+
+    width:55px;
+    height:60px;
+
+    left:10px;
+    top:15px;
+
+    border-radius:45% 45% 40% 40%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff,
+            #7ffcff
+        );
+
+    border:4px solid #00eaff;
+
+    box-shadow:
+        0 0 10px #00ffff,
+        0 0 30px #008cff;
+}
+
+.eye{
+    position:absolute;
+
+    top:27px;
+
+    width:9px;
+    height:13px;
+
+    background:#10152d;
+
+    border-radius:50%;
+}
+
+.eye1{
+    left:18px;
+}
+
+.eye2{
+    right:18px;
+}
+
+.mouth{
+    position:absolute;
+
+    width:15px;
+    height:7px;
+
+    left:17px;
+    top:44px;
+
+    border-bottom:
+        3px solid #6c267d;
+
+    border-radius:50%;
+}
+
+.ear{
+    position:absolute;
+
+    width:22px;
+    height:32px;
+
+    background:#b7ffff;
+
+    border:
+        4px solid #00d9ff;
+
+    border-radius:
+        70% 70% 30% 30%;
+
+    top:0;
+}
+
+.e1{
+    left:10px;
+    transform:rotate(-20deg);
+}
+
+.e2{
+    right:10px;
+    transform:rotate(20deg);
+}
+
+.jet{
+    position:absolute;
+
+    width:18px;
+    height:30px;
+
+    left:2px;
+    top:53px;
+
+    background:
+        linear-gradient(
+            #fff,
+            #00ffff,
+            #ff00c8
+        );
+
+    clip-path:
+        polygon(
+            50% 100%,
+            0 0,
+            100% 0
+        );
+
+    animation:
+        jet .08s infinite alternate;
+}
+
+@keyframes jet{
+    from{
+        transform:scaleY(.7);
+    }
+
+    to{
+        transform:scaleY(1.4);
+    }
+}
+
+#player.dash{
+    filter:
+        drop-shadow(
+            0 0 30px #ff00f7
+        );
+
+    transform:
+        scaleX(1.35);
+}
+
+/* ================= OBJECTS ================= */
+
+.obj{
+    position:absolute;
+    z-index:30;
+}
+
+/* COIN */
+
+.coin{
+    width:32px;
+    height:32px;
+
+    border-radius:50%;
+
+    border:4px solid #ffb400;
+
+    background:
+        radial-gradient(
+            circle,
+            #fff,
+            #ffe300 35%,
+            #ff8c00
+        );
+
+    box-shadow:
+        0 0 20px #ffc400;
+
+    animation:
+        coin .25s linear infinite;
+}
+
+@keyframes coin{
+    0%{
+        transform:rotateY(0);
+    }
+
+    100%{
+        transform:rotateY(360deg);
+    }
+}
+
+/* GEM */
+
+.gem{
+    width:32px;
+    height:40px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff,
+            #00eaff,
+            #a900ff
+        );
+
+    clip-path:
+        polygon(
+            50% 0,
+            100% 35%,
+            75% 100%,
+            25% 100%,
+            0 35%
+        );
+
+    filter:
+        drop-shadow(
+            0 0 15px #00ffff
+        );
+
+    animation:
+        float .4s infinite alternate;
+}
+
+@keyframes float{
+    to{
+        transform:
+            translateY(-10px)
+            rotate(8deg);
+    }
+}
+
+/* SPIKE */
+
+.spike{
+    width:80px;
+    height:45px;
+
+    background:
+        linear-gradient(
+            135deg,
+            transparent 45%,
+            #ff175f 46%,
+            #ff175f 60%,
+            transparent 61%
+        ) 0 0/26px 45px;
+
+    filter:
+        drop-shadow(
+            0 0 10px #ff0055
+        );
+}
+
+/* LASER */
+
+.laser{
+    width:25px;
+    height:100px;
+
+    background:#ff1493;
+
+    box-shadow:
+        0 0 20px #ff1493,
+        0 0 45px #ff0055;
+
+    animation:
+        laser .2s infinite alternate;
+}
+
+@keyframes laser{
+    to{
+        opacity:.45;
+    }
+}
+
+/* ENEMY */
+
+.enemy{
+    width:65px;
+    height:65px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #ffb4e8,
+            #ff236d 50%,
+            #5b003a
+        );
+
+    border:
+        4px solid #ff58c8;
+
+    box-shadow:
+        0 0 25px #ff008c;
+
+    animation:
+        enemy .3s infinite alternate;
+}
+
+@keyframes enemy{
+    to{
+        transform:
+            translateY(-12px)
+            rotate(5deg);
+    }
+}
+
+.enemy:before,
+.enemy:after{
+    content:"";
+
+    position:absolute;
+
+    width:9px;
+    height:15px;
+
+    background:#111;
+
+    border-radius:50%;
+
+    top:18px;
+}
+
+.enemy:before{
+    left:16px;
+}
+
+.enemy:after{
+    right:16px;
+}
+
+/* ENERGY */
+
+.energy{
+    width:45px;
+    height:45px;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffec4f,
+            #ff7000
+        );
+
+    box-shadow:
+        0 0 25px #ff9d00;
+
+    font-size:27px;
+
+    text-align:center;
+
+    line-height:45px;
+}
+
+/* SHIELD */
+
+.shield{
+    width:48px;
+    height:48px;
+
+    border-radius:50%;
+
+    border:5px solid #45f7ff;
+
+    box-shadow:
+        0 0 25px #00ffff;
+
+    background:
+        rgba(0,255,255,.15);
+
+    font-size:28px;
+
+    text-align:center;
+
+    line-height:40px;
+}
+
+/* SCIENCE */
+
+.science{
+    width:58px;
+    height:58px;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6b31ff,
+            #00cfff
+        );
+
+    border:3px solid #fff;
+
+    box-shadow:
+        0 0 25px #713cff;
+
+    font-size:35px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+}
+
+/* ================= SPEED LINES ================= */
+
+.speedLine{
+    position:absolute;
+
+    width:150px;
+    height:2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #fff,
+            #00ffff
+        );
+
+    opacity:.7;
+
+    z-index:10;
+
+    animation:
+        lineMove linear infinite;
+}
+
+@keyframes lineMove{
+
+    from{
+        transform:
+            translateX(110vw);
+    }
+
+    to{
+        transform:
+            translateX(-300px);
+    }
+
+}
+
+/* ================= DASH BAR ================= */
+
+#dashBar{
+    position:absolute;
+
+    top:75px;
+
+    left:50%;
+
+    transform:
+        translateX(-50%);
+
+    width:220px;
+    height:13px;
+
+    border:
+        2px solid #ff35f5;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:#160b27;
+
+    z-index:100;
+}
+
+#dashFill{
+    width:100%;
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff00cc,
+            #00eaff
+        );
+
+    box-shadow:
+        0 0 15px #ff00dd;
+}
+
+/* ================= START ================= */
+
+.screen{
+    position:absolute;
+
+    inset:0;
+
+    z-index:1000;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    background:
+        radial-gradient(
+            circle,
+            #301078,
+            #08051c 70%
+        );
+}
+
+.title{
+    font-size:
+        clamp(40px,8vw,90px);
+
+    font-weight:900;
+
+    color:#fff;
+
+    text-shadow:
+        0 0 10px #00ffff,
+        0 0 30px #00ffff,
+        0 0 60px #ff00e6;
+}
+
+.neon{
+    color:#ffe849;
+
+    text-shadow:
+        0 0 15px #ffb300;
+}
+
+.subtitle{
+    margin:15px;
+
+    color:#69faff;
+
+    font-size:22px;
+}
+
+.start{
+    margin-top:20px;
+
+    padding:
+        18px 55px;
+
+    border:none;
+
+    border-radius:50px;
+
+    font-size:25px;
+
+    font-weight:bold;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff00b7,
+            #6b2cff,
+            #00d9ff
+        );
+
+    box-shadow:
+        0 0 25px #b500ff;
+
+    cursor:pointer;
+}
+
+.start:hover{
+    transform:scale(1.05);
+}
+
+.help{
+    margin-top:25px;
+
+    line-height:1.8;
+
+    color:#ddd;
+}
+
+/* ================= QUESTION ================= */
+
+#question{
+    position:absolute;
+
+    z-index:800;
+
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%);
+
+    width:
+        min(650px,90%);
+
+    padding:25px;
+
+    border-radius:25px;
+
+    border:
+        3px solid #00ffff;
+
+    background:
+        rgba(8,8,40,.97);
+
+    box-shadow:
+        0 0 50px #00cfff;
+
+    display:none;
+
+    text-align:center;
+}
+
+#question h2{
+    color:#55faff;
+
+    margin-bottom:15px;
+}
+
+#qText{
+    font-size:21px;
+
+    color:white;
+
+    margin-bottom:20px;
+}
+
+.answers{
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:12px;
+}
+
+.answer{
+    border:
+        2px solid #00dfff;
+
+    background:#10183c;
+
+    color:white;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    font-size:17px;
+
+    cursor:pointer;
+}
+
+.answer:hover{
+    background:#00b8d4;
+
+    transform:
+        scale(1.03);
+}
+
+/* ================= MOBILE ================= */
+
+#mobile{
+    position:absolute;
+
+    z-index:200;
+
+    bottom:20px;
+
+    left:20px;
+    right:20px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    pointer-events:none;
+}
+
+.btn{
+    pointer-events:auto;
+
+    width:70px;
+    height:70px;
+
+    border-radius:50%;
+
+    border:
+        2px solid #00ffff;
+
+    background:
+        rgba(5,10,40,.8);
+
+    color:white;
+
+    font-size:30px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+#flash{
+    position:absolute;
+
+    inset:0;
+
+    z-index:600;
+
+    background:#ff003c;
+
+    opacity:0;
+
+    pointer-events:none;
+}
+
+/* ================= MOBILE SCREEN ================= */
+
+@media(max-width:600px){
+
+    #hud{
+        top:8px;
+    }
+
+    .box{
+        padding:7px 8px;
+        font-size:12px;
+    }
+
+    .score{
+        font-size:16px;
+    }
+
+    .answers{
+        grid-template-columns:1fr;
+    }
+
+    #dashBar{
+        top:65px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<div class="grid"></div>
+
+<!-- STARS -->
+
+<div class="star" style="left:5%;top:15%"></div>
+<div class="star" style="left:15%;top:28%"></div>
+<div class="star" style="left:25%;top:12%"></div>
+<div class="star" style="left:37%;top:22%"></div>
+<div class="star" style="left:50%;top:9%"></div>
+<div class="star" style="left:63%;top:27%"></div>
+<div class="star" style="left:75%;top:13%"></div>
+<div class="star" style="left:90%;top:23%"></div>
+
+<!-- HUD -->
+
+<div id="hud">
+
+    <div class="box">
+        🪙
+        <span
+            class="score"
+            id="score">
+            0
+        </span>
+    </div>
+
+    <div class="box">
+        🔥 COMBO
+        <span
+            class="combo"
+            id="combo">
+            x1
+        </span>
+    </div>
+
+    <div class="box">
+        ⚡
+        <span
+            class="speed"
+            id="speed">
+            13
+        </span>
+    </div>
+
+    <div class="box">
+        ❤️
+        <span id="lives">
+            3
+        </span>
+    </div>
+
+</div>
+
+<!-- DASH -->
+
+<div id="dashBar">
+
+    <div id="dashFill"></div>
+
+</div>
+
+<!-- PLAYER -->
+
+<div id="player">
+
+    <div class="ear e1"></div>
+    <div class="ear e2"></div>
+
+    <div class="body">
+
+        <div class="eye eye1"></div>
+        <div class="eye eye2"></div>
+
+        <div class="mouth"></div>
+
+    </div>
+
+    <div class="jet"></div>
+
+</div>
+
+<!-- GROUND -->
+
+<div id="ground"></div>
+
+<!-- MOBILE -->
+
+<div id="mobile">
+
+    <button
+        class="btn"
+        onclick="jump()">
+        ⬆️
+    </button>
+
+    <button
+        class="btn"
+        onclick="dash()">
+        ⚡
+    </button>
+
+</div>
+
+<div id="flash"></div>
+
+<!-- QUESTION -->
+
+<div id="question">
+
+    <h2>
+        🧪 SCIENCE CHALLENGE
+    </h2>
+
+    <div id="qText"></div>
+
+    <div class="answers">
+
+        <button
+            class="answer"
+            onclick="answer(0)">
+        </button>
+
+        <button
+            class="answer"
+            onclick="answer(1)">
+        </button>
+
+        <button
+            class="answer"
+            onclick="answer(2)">
+        </button>
+
+        <button
+            class="answer"
+            onclick="answer(3)">
+        </button>
+
+    </div>
+
+</div>
+
+<!-- START -->
+
+<div
+    class="screen"
+    id="start">
+
+    <div class="title">
+
+        SCIENCE<br>
+
+        <span class="neon">
+            RUN
+        </span>
+
+    </div>
+
+    <div class="subtitle">
+        ⚡ NEO LAB ADVENTURE ⚡
+    </div>
+
+    <button
+        class="start"
+        onclick="startGame()">
+
+        🚀 START RUN
+
+    </button>
+
+    <div class="help">
+
+        SPACE / ↑ = กระโดด<br>
+
+        SHIFT = DASH<br>
+
+        🪙 เก็บเหรียญ
+        •
+        💎 เก็บคริสตัล
+        •
+        🛡️ โล่<br>
+
+        ⚠️ หลบกับดัก
+        •
+        🧪 ตอบคำถามวิทยาศาสตร์
+
+    </div>
+
+</div>
+
+<!-- GAME OVER -->
+
+<div
+    class="screen hidden"
+    id="over">
+
+    <div class="title">
+
+        RUN<br>
+
+        <span class="neon">
+            OVER
+        </span>
+
+    </div>
+
+    <div
+        style="
+        font-size:26px;
+        margin:20px"
+        id="final">
+    </div>
+
+    <button
+        class="start"
+        onclick="startGame()">
+
+        🔄 RUN AGAIN
+
+    </button>
+
+</div>
+
+</div>
+
+<script>
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+const game =
+    document.getElementById("game");
+
+const player =
+    document.getElementById("player");
+
+let running=false;
+
+let jumping=false;
+
+let dashing=false;
+
+let score=0;
+
+let lives=3;
+
+let combo=1;
+
+let speed=13;
+
+let distance=0;
+
+let dashEnergy=100;
+
+let shield=false;
+
+let objects=[];
+
+let spawnTimer;
+
+let loopTimer;
+
+let audio;
+
+
+/* =====================================================
+   AUDIO
+===================================================== */
+
+function initAudio(){
+
+    if(audio)
+        return;
+
+    audio =
+        new(
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+}
+
+function beep(
+    frequency,
+    duration=.12
+){
+
+    if(!audio)
+        return;
+
+    const osc =
+        audio.createOscillator();
+
+    const gain =
+        audio.createGain();
+
+    osc.connect(gain);
+
+    gain.connect(
+        audio.destination
+    );
+
+    osc.frequency.value =
+        frequency;
+
+    gain.gain.setValueAtTime(
+        .12,
+        audio.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        .001,
+        audio.currentTime +
+        duration
+    );
+
+    osc.start();
+
+    osc.stop(
+        audio.currentTime +
+        duration
+    );
+
+}
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+function startGame(){
+
+    initAudio();
+
+    if(audio.state==="suspended")
+        audio.resume();
+
+    document
+        .getElementById("start")
+        .classList.add("hidden");
+
+    document
+        .getElementById("over")
+        .classList.add("hidden");
+
+    objects.forEach(
+        o=>o.el.remove()
+    );
+
+    objects=[];
+
+    score=0;
+
+    lives=3;
+
+    combo=1;
+
+    speed=13;
+
+    distance=0;
+
+    dashEnergy=100;
+
+    shield=false;
+
+    running=true;
+
+    updateHUD();
+
+    clearInterval(
+        spawnTimer
+    );
+
+    clearInterval(
+        loopTimer
+    );
+
+    spawnTimer=setInterval(
+        spawnObject,
+        550
+    );
+
+    loopTimer=setInterval(
+        gameLoop,
+        16
+    );
+
+    createSpeedLines();
+
+}
+
+
+/* =====================================================
+   JUMP
+===================================================== */
+
+function jump(){
+
+    if(
+        !running ||
+        jumping
+    )
+        return;
+
+    jumping=true;
+
+    beep(550,.15);
+
+    const startTime =
+        performance.now();
+
+    function animate(time){
+
+        const progress =
+            (time-startTime)/700;
+
+        if(progress>=1){
+
+            player.style.bottom=
+                "130px";
+
+            jumping=false;
+
+            return;
+
+        }
+
+        const height =
+            Math.sin(
+                progress*Math.PI
+            )*250;
+
+        player.style.bottom =
+            (130+height)+"px";
+
+        requestAnimationFrame(
+            animate
+        );
+
+    }
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+/* =====================================================
+   DASH
+===================================================== */
+
+function dash(){
+
+    if(
+        !running ||
+        dashing ||
+        dashEnergy<35
+    )
+        return;
+
+    dashing=true;
+
+    dashEnergy-=35;
+
+    player.classList.add(
+        "dash"
+    );
+
+    beep(1000,.2);
+
+    setTimeout(()=>{
+
+        dashing=false;
+
+        player.classList.remove(
+            "dash"
+        );
+
+    },650);
+
+}
+
+
+/* =====================================================
+   KEYBOARD
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            e.code==="Space" ||
+            e.code==="ArrowUp"
+        ){
+
+            e.preventDefault();
+
+            jump();
+
+        }
+
+        if(
+            e.code==="ShiftLeft" ||
+            e.code==="ShiftRight"
+        ){
+
+            dash();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   DIFFICULTY
+===================================================== */
+
+function getDifficulty(){
+
+    if(distance<300)
+        return "EASY";
+
+    if(distance<700)
+        return "NORMAL";
+
+    if(distance<1100)
+        return "HARD";
+
+    if(distance<1600)
+        return "VERY HARD";
+
+    if(distance<2200)
+        return "INSANE";
+
+    return "🔥 FINAL";
+
+}
+
+
+/* =====================================================
+   SPAWN OBJECT
+===================================================== */
+
+function spawnObject(){
+
+    if(!running)
+        return;
+
+    const difficulty =
+        Math.min(
+            distance/1000,
+            1
+        );
+
+    let r =
+        Math.random();
+
+    let type;
+
+    /* ----------------
+       EASY
+    ---------------- */
+
+    if(
+        r <
+        .20 -
+        difficulty*.10
+    ){
+
+        type="coin";
+
+    }
+
+    else if(
+        r <
+        .30 -
+        difficulty*.05
+    ){
+
+        type="gem";
+
+    }
+
+    /* ----------------
+       TRAPS
+    ---------------- */
+
+    else if(r<.48){
+
+        type="spike";
+
+    }
+
+    else if(r<.62){
+
+        type="laser";
+
+    }
+
+    else if(r<.76){
+
+        type="enemy";
+
+    }
+
+    /* ----------------
+       POWER UPS
+    ---------------- */
+
+    else if(r<.84){
+
+        type="energy";
+
+    }
+
+    else if(r<.91){
+
+        type="shield";
+
+    }
+
+    else{
+
+        type="science";
+
+    }
+
+    createObject(type);
+
+
+    /* =================================================
+       500M+
+       เพิ่มกับดัก
+    ================================================= */
+
+    if(
+        distance>500 &&
+        Math.random()<.30
+    ){
+
+        setTimeout(()=>{
+
+            if(running){
+
+                createObject(
+                    Math.random()<.5
+                    ?"spike"
+                    :"laser"
+                );
+
+            }
+
+        },250);
+
+    }
+
+
+    /* =================================================
+       1000M+
+       กับดัก 2 ชุด
+    ================================================= */
+
+    if(
+        distance>1000 &&
+        Math.random()<.35
+    ){
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "spike"
+                );
+
+        },180);
+
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "laser"
+                );
+
+        },420);
+
+    }
+
+
+    /* =================================================
+       1600M+
+       COMBO TRAP
+    ================================================= */
+
+    if(
+        distance>1600 &&
+        Math.random()<.40
+    ){
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "spike"
+                );
+
+        },150);
+
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "enemy"
+                );
+
+        },350);
+
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "laser"
+                );
+
+        },550);
+
+    }
+
+
+    /* =================================================
+       2200M+
+       FINAL TRAP
+    ================================================= */
+
+    if(
+        distance>2200 &&
+        Math.random()<.55
+    ){
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "laser"
+                );
+
+        },100);
+
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "spike"
+                );
+
+        },300);
+
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "enemy"
+                );
+
+        },500);
+
+
+        setTimeout(()=>{
+
+            if(running)
+                createObject(
+                    "laser"
+                );
+
+        },700);
+
+    }
+
+}
+
+
+/* =====================================================
+   CREATE OBJECT
+===================================================== */
+
+function createObject(type){
+
+    const el =
+        document.createElement(
+            "div"
+        );
+
+    el.classList.add(
+        "obj",
+        type
+    );
+
+    let bottom=130;
+
+
+    if(type==="coin"){
+
+        bottom=
+            210+
+            Math.random()*220;
+
+    }
+
+
+    if(type==="gem"){
+
+        bottom=
+            230+
+            Math.random()*200;
+
+    }
+
+
+    if(type==="laser"){
+
+        bottom=
+            130+
+            Math.random()*120;
+
+    }
+
+
+    if(type==="enemy"){
+
+        bottom=
+            150+
+            Math.random()*220;
+
+    }
+
+
+    if(type==="energy"){
+
+        bottom=
+            220+
+            Math.random()*150;
+
+        el.innerHTML="⚡";
+
+    }
+
+
+    if(type==="shield"){
+
+        bottom=
+            230+
+            Math.random()*160;
+
+        el.innerHTML="🛡️";
+
+    }
+
+
+    if(type==="science"){
+
+        bottom=
+            230+
+            Math.random()*130;
+
+        el.innerHTML="🧪";
+
+    }
+
+
+    el.style.left=
+        "110%";
+
+    el.style.bottom=
+        bottom+"px";
+
+    game.appendChild(el);
+
+
+    objects.push({
+
+        el:el,
+
+        type:type,
+
+        x:
+            window.innerWidth+
+            150,
+
+        hit:false
+
+    });
+
+}
+
+
+/* =====================================================
+   GAME LOOP
+===================================================== */
+
+function gameLoop(){
+
+    if(!running)
+        return;
+
+
+    distance+=
+        speed*.015;
+
+
+    /* SPEED LEVEL */
+
+    if(distance<300){
+
+        speed=13;
+
+    }
+
+    else if(distance<700){
+
+        speed=15;
+
+    }
+
+    else if(distance<1100){
+
+        speed=18;
+
+    }
+
+    else if(distance<1600){
+
+        speed=22;
+
+    }
+
+    else if(distance<2200){
+
+        speed=25;
+
+    }
+
+    else{
+
+        speed=29;
+
+    }
+
+
+    /* DASH RECHARGE */
+
+    dashEnergy=
+        Math.min(
+            100,
+            dashEnergy+.15
+        );
+
+
+    document
+        .getElementById(
+            "dashFill"
+        )
+        .style.width=
+            dashEnergy+"%";
+
+
+    /* OBJECT MOVEMENT */
+
+    objects.forEach(o=>{
+
+        o.x-=speed;
+
+        o.el.style.left=
+            o.x+"px";
+
+
+        const a =
+            player.getBoundingClientRect();
+
+        const b =
+            o.el.getBoundingClientRect();
+
+
+        if(
+            collision(a,b) &&
+            !o.hit
+        ){
+
+            o.hit=true;
+
+            handleObject(o);
+
+        }
+
+
+        if(
+            o.x<-180
+        ){
+
+            o.el.remove();
+
+        }
+
+    });
+
+
+    objects =
+        objects.filter(
+            o=>o.el.isConnected
+        );
+
+
+    updateHUD();
+
+}
+
+
+/* =====================================================
+   COLLISION
+===================================================== */
+
+function collision(a,b){
+
+    return !(
+        a.right<b.left ||
+        a.left>b.right ||
+        a.bottom<b.top ||
+        a.top>b.bottom
+    );
+
+}
+
+
+/* =====================================================
+   OBJECT HANDLER
+===================================================== */
+
+function handleObject(o){
+
+    const type=o.type;
+
+
+    /* COIN */
+
+    if(type==="coin"){
+
+        score+=
+            10*combo;
+
+        combo=
+            Math.min(
+                10,
+                combo+.1
+            );
+
+        beep(900,.07);
+
+        o.el.remove();
+
+    }
+
+
+    /* GEM */
+
+    else if(type==="gem"){
+
+        score+=
+            50*combo;
+
+        combo+=.5;
+
+        beep(1200,.1);
+
+        o.el.remove();
+
+    }
+
+
+    /* ENERGY */
+
+    else if(type==="energy"){
+
+        dashEnergy=
+            Math.min(
+                100,
+                dashEnergy+45
+            );
+
+        score+=25;
+
+        beep(700,.12);
+
+        o.el.remove();
+
+    }
+
+
+    /* SHIELD */
+
+    else if(type==="shield"){
+
+        shield=true;
+
+        score+=50;
+
+        beep(600,.15);
+
+        o.el.remove();
+
+    }
+
+
+    /* SCIENCE */
+
+    else if(type==="science"){
+
+        o.el.remove();
+
+        showQuestion();
+
+    }
+
+
+    /* TRAPS */
+
+    else{
+
+        /* DASH */
+
+        if(dashing){
+
+            score+=100;
+
+            beep(1300,.15);
+
+            o.el.remove();
+
+        }
+
+        /* SHIELD */
+
+        else if(shield){
+
+            shield=false;
+
+            score+=75;
+
+            beep(750,.2);
+
+            o.el.remove();
+
+        }
+
+        /* HIT */
+
+        else{
+
+            hit();
+
+            o.el.remove();
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   HIT
+===================================================== */
+
+function hit(){
+
+    lives--;
+
+    combo=1;
+
+    beep(100,.35);
+
+
+    const flash =
+        document.getElementById(
+            "flash"
+        );
+
+    flash.style.opacity=".55";
+
+
+    setTimeout(()=>{
+
+        flash.style.opacity="0";
+
+    },120);
+
+
+    if(lives<=0){
+
+        gameOver();
+
+    }
+
+}
+
+
+/* =====================================================
+   SCIENCE QUESTIONS
+   30 QUESTIONS
+===================================================== */
+
+const questions=[
+
+{
+q:"🌱 พืชใช้แก๊สอะไรในการสังเคราะห์ด้วยแสง?",
+a:[
+"ออกซิเจน",
+"คาร์บอนไดออกไซด์",
+"ไนโตรเจน",
+"ไฮโดรเจน"
+],
+c:1
+},
+
+{
+q:"🌍 ดาวเคราะห์ดวงใดที่เราอาศัยอยู่?",
+a:[
+"ดาวอังคาร",
+"ดาวศุกร์",
+"โลก",
+"ดาวพฤหัสบดี"
+],
+c:2
+},
+
+{
+q:"💧 น้ำเดือดที่อุณหภูมิประมาณเท่าไรที่ระดับน้ำทะเล?",
+a:[
+"50°C",
+"75°C",
+"100°C",
+"150°C"
+],
+c:2
+},
+
+{
+q:"☀️ แหล่งพลังงานสำคัญของโลกคืออะไร?",
+a:[
+"ดวงจันทร์",
+"ดวงอาทิตย์",
+"ดาวอังคาร",
+"เมฆ"
+],
+c:1
+},
+
+{
+q:"🧲 วัสดุใดถูกแม่เหล็กดูดได้?",
+a:[
+"ไม้",
+"พลาสติก",
+"เหล็ก",
+"แก้ว"
+],
+c:2
+},
+
+{
+q:"🌡️ เครื่องมือใดใช้วัดอุณหภูมิ?",
+a:[
+"ไม้บรรทัด",
+"เทอร์โมมิเตอร์",
+"เข็มทิศ",
+"นาฬิกา"
+],
+c:1
+},
+
+{
+q:"🫁 อวัยวะใดใช้ในการหายใจ?",
+a:[
+"หัวใจ",
+"สมอง",
+"ปอด",
+"กระเพาะอาหาร"
+],
+c:2
+},
+
+{
+q:"🌈 สีรุ้งเกิดจากปรากฏการณ์ใด?",
+a:[
+"การกระจายแสง",
+"แรงโน้มถ่วง",
+"การเสียดสี",
+"การนำไฟฟ้า"
+],
+c:0
+},
+
+{
+q:"⚡ หน่วยของกระแสไฟฟ้าคืออะไร?",
+a:[
+"โวลต์",
+"แอมแปร์",
+"วัตต์",
+"เมตร"
+],
+c:1
+},
+
+{
+q:"🔬 เครื่องมือใดใช้ดูสิ่งมีชีวิตขนาดเล็ก?",
+a:[
+"กล้องโทรทรรศน์",
+"กล้องจุลทรรศน์",
+"กล้องถ่ายรูป",
+"กล้องวงจรปิด"
+],
+c:1
+},
+
+{
+q:"🌙 ดวงจันทร์เป็นอะไรของโลก?",
+a:[
+"ดาวฤกษ์",
+"ดาวเคราะห์",
+"ดาวบริวาร",
+"ดาวหาง"
+],
+c:2
+},
+
+{
+q:"🪐 ดาวเคราะห์ดวงใดมีวงแหวนเด่นชัด?",
+a:[
+"โลก",
+"ดาวเสาร์",
+"ดาวพุธ",
+"ดาวศุกร์"
+],
+c:1
+},
+
+{
+q:"💨 อากาศประกอบด้วยแก๊สใดมากที่สุด?",
+a:[
+"ออกซิเจน",
+"คาร์บอนไดออกไซด์",
+"ไนโตรเจน",
+"ไฮโดรเจน"
+],
+c:2
+},
+
+{
+q:"🧊 น้ำแข็งเป็นสถานะใดของน้ำ?",
+a:[
+"ของแข็ง",
+"ของเหลว",
+"แก๊ส",
+"พลาสมา"
+],
+c:0
+},
+
+{
+q:"☁️ ไอน้ำกลายเป็นหยดน้ำเรียกว่าอะไร?",
+a:[
+"การระเหย",
+"การควบแน่น",
+"การหลอมเหลว",
+"การแข็งตัว"
+],
+c:1
+},
+
+{
+q:"🔥 ความร้อนจากดวงอาทิตย์มายังโลกด้วยวิธีใด?",
+a:[
+"การแผ่รังสี",
+"การนำความร้อน",
+"การพาความร้อน",
+"การเสียดสี"
+],
+c:0
+},
+
+{
+q:"🍎 แรงใดทำให้สิ่งของตกลงสู่พื้นโลก?",
+a:[
+"แรงแม่เหล็ก",
+"แรงเสียดทาน",
+"แรงโน้มถ่วง",
+"แรงไฟฟ้า"
+],
+c:2
+},
+
+{
+q:"🔋 อุปกรณ์ใดใช้เก็บพลังงานไฟฟ้า?",
+a:[
+"แบตเตอรี่",
+"หลอดไฟ",
+"สวิตช์",
+"สายไฟ"
+],
+c:0
+},
+
+{
+q:"💡 หลอดไฟเปลี่ยนพลังงานไฟฟ้าเป็นพลังงานใด?",
+a:[
+"พลังงานแสง",
+"พลังงานเคมี",
+"พลังงานนิวเคลียร์",
+"พลังงานลม"
+],
+c:0
+},
+
+{
+q:"🌬️ ลมเกิดจากอะไรเป็นหลัก?",
+a:[
+"ความแตกต่างของอุณหภูมิและความดันอากาศ",
+"การหมุนของดวงจันทร์",
+"แสงจากดาว",
+"แรงแม่เหล็ก"
+],
+c:0
+},
+
+{
+q:"🌳 ส่วนใดของพืชทำหน้าที่ดูดน้ำจากดิน?",
+a:[
+"ใบ",
+"ดอก",
+"ราก",
+"ผล"
+],
+c:2
+},
+
+{
+q:"🧬 สิ่งใดเป็นหน่วยพื้นฐานของสิ่งมีชีวิต?",
+a:[
+"อะตอม",
+"เซลล์",
+"แร่",
+"โมเลกุลน้ำ"
+],
+c:1
+},
+
+{
+q:"🦴 กระดูกมีหน้าที่สำคัญอย่างไร?",
+a:[
+"ช่วยพยุงร่างกาย",
+"สร้างเสียง",
+"ย่อยอาหาร",
+"สูบฉีดเลือด"
+],
+c:0
+},
+
+{
+q:"❤️ อวัยวะใดทำหน้าที่สูบฉีดเลือด?",
+a:[
+"ปอด",
+"หัวใจ",
+"ตับ",
+"ไต"
+],
+c:1
+},
+
+{
+q:"🧠 อวัยวะใดควบคุมการทำงานของร่างกาย?",
+a:[
+"หัวใจ",
+"สมอง",
+"กระเพาะ",
+"ปอด"
+],
+c:1
+},
+
+{
+q:"🌡️ น้ำแข็งโดยทั่วไปเกิดขึ้นเมื่ออุณหภูมิลดลงถึงประมาณเท่าไร?",
+a:[
+"0°C",
+"20°C",
+"50°C",
+"100°C"
+],
+c:0
+},
+
+{
+q:"🚀 ยานอวกาศเคลื่อนที่ไปข้างหน้าได้จากอะไร?",
+a:[
+"แรงขับจากเครื่องยนต์",
+"แรงลม",
+"แรงฝน",
+"แรงเสียดทาน"
+],
+c:0
+},
+
+{
+q:"🌌 ดวงอาทิตย์จัดเป็นอะไร?",
+a:[
+"ดาวเคราะห์",
+"ดาวฤกษ์",
+"ดาวบริวาร",
+"ดาวหาง"
+],
+c:1
+},
+
+{
+q:"🔭 กล้องโทรทรรศน์ใช้สำหรับอะไร?",
+a:[
+"ดูสิ่งที่อยู่ไกล",
+"วัดอุณหภูมิ",
+"วัดน้ำหนัก",
+"วัดความเร็ว"
+],
+c:0
+},
+
+{
+q:"🌍 โลกโคจรรอบอะไร?",
+a:[
+"ดวงจันทร์",
+"ดวงอาทิตย์",
+"ดาวอังคาร",
+"ดาวเสาร์"
+],
+c:1
+}
+
+];
+
+
+/* =====================================================
+   QUESTION SYSTEM
+===================================================== */
+
+let currentQuestion;
+
+let usedQuestions=[];
+
+
+function showQuestion(){
+
+    running=false;
+
+
+    /*
+        ถ้าใช้ครบทุกข้อ
+        ให้เริ่มสุ่มใหม่
+    */
+
+    if(
+        usedQuestions.length>=
+        questions.length
+    ){
+
+        usedQuestions=[];
+
+    }
+
+
+    let available =
+        questions.filter(
+            (q,index)=>
+                !usedQuestions
+                    .includes(index)
+        );
+
+
+    let index =
+        Math.floor(
+            Math.random()*
+            available.length
+        );
+
+
+    currentQuestion =
+        available[index];
+
+
+    usedQuestions.push(
+        questions.indexOf(
+            currentQuestion
+        )
+    );
+
+
+    document
+        .getElementById("qText")
+        .textContent=
+            currentQuestion.q;
+
+
+    document
+        .querySelectorAll(
+            ".answer"
+        )
+        .forEach(
+            (button,index)=>{
+
+                button.textContent=
+                    currentQuestion.a[
+                        index
+                    ];
+
+            }
+        );
+
+
+    document
+        .getElementById("question")
+        .style.display=
+            "block";
+
+}
+
+
+/* =====================================================
+   ANSWER
+===================================================== */
+
+function answer(index){
+
+    if(
+        index===
+        currentQuestion.c
+    ){
+
+        score+=300;
+
+        combo+=2;
+
+        beep(1000,.3);
+
+        alert(
+            "🎉 ตอบถูก!\n\n"+
+            "+300 คะแนน"
+        );
+
+    }
+
+    else{
+
+        lives--;
+
+        combo=1;
+
+        beep(150,.4);
+
+        alert(
+            "❌ ยังไม่ถูก!\n\n"+
+            "คำตอบคือ "+
+            currentQuestion.a[
+                currentQuestion.c
+            ]
+        );
+
+    }
+
+
+    document
+        .getElementById(
+            "question"
+        )
+        .style.display=
+            "none";
+
+
+    if(lives<=0){
+
+        gameOver();
+
+    }
+
+    else{
+
+        running=true;
+
+    }
+
+}
+
+
+/* =====================================================
+   SPEED LINES
+===================================================== */
+
+function createSpeedLines(){
+
+    document
+        .querySelectorAll(
+            ".speedLine"
+        )
+        .forEach(
+            e=>e.remove()
+        );
+
+
+    for(
+        let i=0;
+        i<22;
+        i++
+    ){
+
+        const line =
+            document.createElement(
+                "div"
+            );
+
+        line.className=
+            "speedLine";
+
+
+        line.style.top=
+            Math.random()*65+
+            "%";
+
+
+        line.style.width=
+            50+
+            Math.random()*200+
+            "px";
+
+
+        line.style.animationDuration=
+            .25+
+            Math.random()*.7+
+            "s";
+
+
+        line.style.animationDelay=
+            Math.random()+
+            "s";
+
+
+        game.appendChild(line);
+
+    }
+
+}
+
+
+/* =====================================================
+   HUD
+===================================================== */
+
+function updateHUD(){
+
+    document
+        .getElementById(
+            "score"
+        )
+        .textContent=
+            Math.floor(score);
+
+
+    document
+        .getElementById(
+            "combo"
+        )
+        .textContent=
+            "x"+
+            combo.toFixed(1);
+
+
+    document
+        .getElementById(
+            "speed"
+        )
+        .textContent=
+            Math.floor(speed)+
+            " | "+
+            getDifficulty();
+
+
+    document
+        .getElementById(
+            "lives"
+        )
+        .textContent=
+            lives;
+
+}
+
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function gameOver(){
+
+    running=false;
+
+
+    clearInterval(
+        spawnTimer
+    );
+
+    clearInterval(
+        loopTimer
+    );
+
+
+    document
+        .getElementById(
+            "final"
+        )
+        .innerHTML=
+        `
+        🏆 SCORE :
+        ${Math.floor(score)}
+
+        <br><br>
+
+        📏 DISTANCE :
+        ${Math.floor(distance)}
+        m
+
+        <br><br>
+
+        ⚡ MAX SPEED :
+        ${Math.floor(speed)}
+
+        <br><br>
+
+        🔥 COMBO :
+        x${combo.toFixed(1)}
+        `;
+
+
+    document
+        .getElementById(
+            "over"
+        )
+        .classList
+        .remove("hidden");
+
+}
+
+</script>
+
+</body>
+</html>
+Displaying Final.html.
